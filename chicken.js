@@ -300,8 +300,8 @@ class Chicken {
         lerpCurve(
           [leftLegPointsArr[0].x, leftLegPointsArr[0].y],
           [
-            this.bodyMarkers[0].x + this.fullOutlineParams.body.bustPoint.x,
-            this.bodyMarkers[0].y,
+            bodyPointsArr[0].x - this.fullOutlineParams.body.bustPoint.x,
+            bodyPointsArr[0].y,
           ],
           [
             headPointsArr[Math.floor(headPointsArr.length / 4 - 1)].x,
@@ -395,43 +395,59 @@ class Chicken {
     c.clip();
   }
 
-  plotGrid(gridArr) {
+  plotGrid(gridArr, spacingX, spacingY) {
+    let headPointsArr = this.fullOutlineParams.head.pointsArr;
+    let leftLegPointsArr = this.fullOutlineParams.leftLeg.pointsArr;
+    let tailPointsArr = this.fullOutlineParams.tail.pointsArr;
+
     let topLine = {
       start: {
         x:
-          this.fullOutlineParams.head.markersArr[0].x +
-          this.fullOutlineParams.body.bustPoint.x,
+          headPointsArr[Math.floor(headPointsArr.length * 0.5)].x -
+          this.fullOutlineParams.body.bustPoint.x -
+          this.fullOutlineParams.body.size,
         y:
-          this.fullOutlineParams.head.markersArr[1].y +
-          this.fullOutlineParams.body.bustPoint.y,
+          headPointsArr[Math.floor(headPointsArr.length * 0.25)].y -
+          this.fullOutlineParams.body.bustPoint.y -
+          this.fullOutlineParams.body.size,
       },
       end: {
         x:
-          this.fullOutlineParams.tail.markersArr[2].x +
-          this.fullOutlineParams.body.caboosePoint.x,
-        y: this.fullOutlineParams.head.markersArr[1].y,
+          tailPointsArr[Math.floor(tailPointsArr.length * 0.5)].x +
+          this.fullOutlineParams.body.caboosePoint.x +
+          this.fullOutlineParams.body.size,
+        y:
+          headPointsArr[Math.floor(headPointsArr.length * 0.25)].y -
+          this.fullOutlineParams.body.bustPoint.y -
+          this.fullOutlineParams.body.size,
       },
     };
 
     let bottomLine = {
       start: {
         x:
-          this.fullOutlineParams.head.markersArr[0].x +
-          this.fullOutlineParams.body.bustPoint.x,
-        y: this.fullOutlineParams.leftLeg.markersArr[3].y,
+          headPointsArr[Math.floor(headPointsArr.length * 0.5)].x -
+          this.fullOutlineParams.body.bustPoint.x -
+          this.fullOutlineParams.body.size,
+        y:
+          leftLegPointsArr[Math.floor(leftLegPointsArr.length - 1)].y +
+          this.fullOutlineParams.leftLeg.size,
       },
       end: {
         x:
-          this.fullOutlineParams.tail.markersArr[2].x +
-          this.fullOutlineParams.body.caboosePoint.x,
-        y: this.fullOutlineParams.leftLeg.markersArr[3].y,
+          tailPointsArr[Math.floor(tailPointsArr.length * 0.5)].x +
+          this.fullOutlineParams.body.caboosePoint.x +
+          this.fullOutlineParams.body.size,
+        y:
+          leftLegPointsArr[Math.floor(leftLegPointsArr.length - 1)].y +
+          this.fullOutlineParams.leftLeg.size,
       },
     };
 
     let topRow = [];
     let bottomRow = [];
 
-    for (let i = 0; i < 1; i += this.lerpValue) {
+    for (let i = 0; i < 1; i += spacingX) {
       topRow.push(
         lerpLine(
           [topLine.start.x, topLine.start.y],
@@ -440,7 +456,7 @@ class Chicken {
         )
       );
     }
-    for (let i = 1; i > 0; i -= this.lerpValue) {
+    for (let i = 1; i > 0; i -= spacingY) {
       bottomRow.push(
         lerpLine(
           [bottomLine.start.x, bottomLine.start.y],
@@ -475,7 +491,7 @@ class Chicken {
       makePolygon(
         gridArr[i].x,
         gridArr[i].y,
-        Math.random() * 10,
+        Math.random() * 8,
         Math.random() * 10,
         null,
         `lightyellow`,
@@ -615,21 +631,21 @@ class Chicken {
 
     this.renderFeet();
 
-    c.fillStyle = "rgba(215, 215, 245, .75)";
+    c.fillStyle = "rgba(255, 255, 255, .75)";
     this.plotOutlines();
     this.renderOutline(this.fullBodyOutline);
+
     c.fill();
 
-    this.plotGrid(this.bodyGrid);
+    this.plotGrid(this.bodyGrid, this.lerpValue, this.lerpValue);
 
     c.restore();
     c.moveTo(0, 0);
 
-    c.fillStyle = "rgba(255, 255, 255, .9)";
+    c.fillStyle = "rgba(255, 225, 245, .8)";
     this.renderOutline(this.headOutline);
     c.fill();
     c.stroke();
-
     c.restore();
 
     c.fillStyle = "rgba(0, 0, 0, 0)";

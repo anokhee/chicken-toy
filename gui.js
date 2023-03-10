@@ -38,11 +38,11 @@ let chickenParams = {
     },
     cutOff: {
       label: "Cutoff Point",
-      value: { top: 30, bottom: 30 },
+      value: { top: 20, bottom: 20 },
     },
     ridgeOff: {
       label: "Head Ridges",
-      value: { x: 5, y: 0 },
+      value: { x: 10, y: 10 },
     },
   },
   body: {
@@ -62,7 +62,7 @@ let chickenParams = {
     },
     bustPoint: {
       label: "Bust Point",
-      value: { x: -60, y: 0 },
+      value: { x: 60, y: 0 },
     },
   },
   leg: {
@@ -98,7 +98,8 @@ function generateGUI(func, chickenArr) {
     individualChickenControlsContainer.style.border = "1px solid black";
 
     let individualChickenControlsContainerLabel = document.createElement("p");
-    individualChickenControlsContainerLabel.innerHTML = `Chicken #${i}`;
+    individualChickenControlsContainerLabel.innerHTML = `${i}th Chicken`;
+    individualChickenControlsContainerLabel.style.textAlign = "center";
 
     // Append children to container
     individualChickenControlsContainer.appendChild(
@@ -128,7 +129,13 @@ function generateSlider(index, section, part, parameter) {
   let sliderLabel = document.createElement("p");
 
   if (typeof parameter.value === "object" && parameter !== null) {
-    sliderLabel.innerHTML = `${parameter.label} \n ${parameter.value.x}, y: ${parameter.value.y}`;
+    sliderContainer.appendChild(sliderLabel);
+    for (const objectPair in parameter.value) {
+      let subLabel = document.createElement("p");
+      sliderLabel.innerHTML = `${parameter.label}:`;
+      subLabel.innerHTML = `${objectPair}: ${parameter.value[objectPair]}`;
+      sliderContainer.appendChild(subLabel);
+    }
   } else {
     sliderLabel.innerHTML = `${chickenParams[section][part].label}`;
     sliderContainer.appendChild(sliderLabel);
