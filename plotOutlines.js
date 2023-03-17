@@ -192,5 +192,6 @@ function plotOutlines(obj, allPoints, fullBodyOutline, headOutline, lerpVal) {
   for (let i = 0; i < headBottomRow.length; i++) {
     headOutline.push(headBottomRow[i]);
   }
+
   headOutline.push(fullBodyOutline[0].x, fullBodyOutline[0].y);
 }

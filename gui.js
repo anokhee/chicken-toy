@@ -13,103 +13,155 @@ let selectorMenu = document.getElementById("selectorMenu");
 let rightHandPanel = document.getElementById("rightHandPanel");
 let selectedMenuItem = "majorParams";
 
-let selectedChickenId = 0;
 let selectedChicken;
 
 function createGUI(chickenArr) {
-  selectedChicken = chickenArr[selectedChickenId];
+  selectedChicken = chickenArr[0];
+  createRightHandPanel(selectedChicken);
 
-  switchControlPanel(selectedChicken, selectedMenuItem);
-  createLeftHandMenu(selectedChicken, selectorMenu);
-
-  for (let eachChicken in chickenArr) {
-    let chicken = chickenArr[eachChicken];
-    populateChickenToDropdown(chicken, chickenSelector);
+  for (let chickenId in chickenArr) {
+    populateChickenToDropdown(chickenId, chickenSelector);
   }
 
   chickenSelector.addEventListener("input", function () {
-    for (const chickenIndex in chickenArr) {
-      selectedChickenId = this.value;
-      if (selectedChickenId == chickenArr[chickenIndex].id) {
-        selectedChicken = chickenArr[chickenIndex];
-
-        switchControlPanel(selectedChicken, selectedMenuItem);
-        createLeftHandMenu(selectedChicken, selectorMenu);
-      }
-    }
+    selectedChicken = chickenArr[this.value - 1];
+    createRightHandPanel(selectedChicken);
   });
 }
 
-function populateChickenToDropdown(chicken, select) {
+function populateChickenToDropdown(chickenId, select) {
   let option = document.createElement("option");
-  option.value = chicken.id;
-  option.innerHTML = `Chicken ${chicken.id}`;
+  option.value = chickenArr[chickenId].id;
+  option.innerHTML = `Chicken ${parseInt(chickenId) + 1}`;
 
   select.appendChild(option);
+  return chickenId;
 }
 
-function switchControlPanel(chicken, selectedMenu) {
+function createRightHandPanel(chicken) {
+  selectorMenu.innerHTML = "";
   rightHandPanel.innerHTML = "";
-
   let heading = document.createElement("h2");
-  heading.innerHTML = `Chicken #${chicken.id}`;
-
-  let subHeading = document.createElement("h3");
-  subHeading.innerHTML = chickenParams[selectedMenu].sectionLabel;
-
+  heading.innerHTML = `Chicken ` + chicken.id;
   rightHandPanel.appendChild(heading);
-  rightHandPanel.appendChild(subHeading);
 
-  for (const section in chickenParams[selectedMenu]) {
-    if (section != "sectionLabel") {
-      createSlider(chicken, section, selectedMenu, rightHandPanel);
+  for (const eachSection in chickenParams) {
+    let section = chickenParams[eachSection];
+    let sectionContainer = document.createElement("div");
+    sectionContainer.className = "menu-section-container";
+    sectionContainer.style.display = "hidden";
+
+    let sectionHeader = document.createElement("h3");
+    sectionHeader.innerHTML = `${section.sectionLabel}`;
+
+    rightHandPanel.appendChild(sectionContainer);
+    sectionContainer.appendChild(sectionHeader);
+    sectionContainer.style.display = "none";
+
+    for (const eachSubsection in chickenParams[eachSection]) {
+      let subsection = chickenParams[eachSection][eachSubsection];
+      if (subsection.label != undefined) {
+        let subsectionContainer = document.createElement("div");
+        subsectionContainer.className = "menu-subsection-container";
+
+        let subsectionHeader = document.createElement("h4");
+        subsectionHeader.innerHTML = `${subsection.label}`;
+
+        sectionContainer.appendChild(subsectionContainer);
+        subsectionContainer.appendChild(subsectionHeader);
+        generateSlider(
+          chicken.id,
+          subsection.type,
+          subsection,
+          subsection.objMap,
+          subsectionContainer
+        );
+      }
     }
-  }
-}
 
-function createLeftHandMenu(chicken, container) {
-  container.innerHTML = "";
+    let menuSelectorContainer = document.createElement("div");
+    menuSelectorContainer.className = "menu-selector";
 
-  for (const eachParam in chickenParams) {
-    let thisItem = chickenParams[eachParam];
-    let selectorContainer = document.createElement("div");
-    selectorContainer.className = "lefthand-selector-container";
+    let menuLabel = document.createElement("p");
+    menuLabel.innerHTML = `${section.sectionLabel}`;
 
-    let selectorLabel = document.createElement("p");
-    selectorLabel.innerHTML = `${thisItem.sectionLabel}`;
+    menuSelectorContainer.appendChild(menuLabel);
+    selectorMenu.appendChild(menuSelectorContainer);
 
-    selectorContainer.appendChild(selectorLabel);
-    container.appendChild(selectorContainer);
-
-    selectorContainer.addEventListener("click", function () {
-      selectedChickenId = chicken.id;
-
-      selectedMenuItem = eachParam;
-      switchControlPanel(chicken, selectedMenuItem);
+    menuSelectorContainer.addEventListener("click", function () {
+      rightHandPanel.innerHTML = "";
+      rightHandPanel.appendChild(sectionContainer);
+      sectionContainer.style.display = "block";
+      this.classList.add("selected");
     });
   }
 }
 
-function createSlider(chicken, param, selectedMenu, container) {
-  let test = document.createElement("p");
-  let range = document.createElement("input");
-  test.innerHTML = chickenParams[selectedMenu][param].label;
+// NEEDS REFACTORING O____O
+function generateSlider(chickenId, type, subsection, objMap, container) {
+  if (type === "slider-one-axis") {
+    let slider = document.createElement("input");
+    slider.type = "range";
+    slider.min = subsection.range.min;
+    slider.max = subsection.range.max;
+    slider.value = subsection.value;
+    slider.step = 0.01;
 
-  //   test.innerHTML = `${chickenParams[param].label}`;
-
-  for (const eachSection in chickenParams[selectedMenu]) {
-    let section = chickenParams[selectedMenu][eachSection];
-    if (section.label != undefined) {
-      range.type = "range";
-      range.min = 0;
-      range.max = 10;
-    }
-
-    container.appendChild(test);
-    container.appendChild(range);
-
-    range.addEventListener("input", function () {
-      setChickenValues(selectedChickenId, param, this.value);
+    slider.addEventListener("input", function () {
+      setChickenValues(chickenId, subsection, objMap, this.value);
     });
+
+    container.appendChild(slider);
+  }
+  if (type === "slider-two-axes") {
+    let slidersContainer = document.createElement("div");
+    slidersContainer.className = "split-sliders-container";
+
+    let splitContainer1 = document.createElement("div");
+    splitContainer1.className = "split-slider-container";
+
+    let sliderLabel1 = document.createElement("p");
+    sliderLabel1.innerHTML = `${Object.entries(subsection.value)[0][0]}`;
+
+    let slider1 = document.createElement("input");
+    slider1.type = "range";
+    slider1.value = Object.entries(subsection.value)[0][1];
+    slider1.min = subsection.range.min;
+    slider1.max = subsection.range.max;
+    slider1.value = subsection.value;
+
+    splitContainer1.appendChild(sliderLabel1);
+    splitContainer1.appendChild(slider1);
+
+    slider1.addEventListener("input", function () {
+      setChickenValues(chickenId, subsection, objMap[0], this.value);
+    });
+
+    //
+
+    let splitContainer2 = document.createElement("div");
+    splitContainer2.className = "split-slider-container";
+
+    let sliderLabel2 = document.createElement("p");
+    sliderLabel2.innerHTML = `${Object.entries(subsection.value)[1][0]}`;
+
+    let slider2 = document.createElement("input");
+    slider2.type = "range";
+    slider2.value = Object.entries(subsection.value)[1][1];
+    slider2.min = subsection.range.min;
+    slider2.max = subsection.range.max;
+    slider2.value = subsection.value;
+
+    splitContainer2.appendChild(sliderLabel2);
+    splitContainer2.appendChild(slider2);
+
+    slidersContainer.appendChild(splitContainer1);
+    slidersContainer.appendChild(splitContainer2);
+
+    slider2.addEventListener("input", function () {
+      setChickenValues(chickenId, subsection, objMap[1], this.value);
+    });
+
+    container.appendChild(slidersContainer);
   }
 }

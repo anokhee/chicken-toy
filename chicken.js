@@ -6,7 +6,7 @@ class Chicken {
     this.frameWidth = frameWidth;
     this.frameHeight = frameHeight;
     this.resolution = chickenParams.majorParams.resolution.value;
-    this.lerpValue = 1 / this.resolution;
+    this.lerpValue = 0.08;
 
     // Customizable with GUI
 
@@ -137,7 +137,7 @@ class Chicken {
     this.obj.leftLeg.pointsArr = [];
 
     this.bodyGrid = [];
-    this.headGrid = [];
+    // this.headGrid = [];
   }
 
   renderOutline(outline, color, lineWidth) {
@@ -158,15 +158,7 @@ class Chicken {
   renderPattern(grid) {
     for (let i = 0; i < grid.length; i++) {
       c.beginPath();
-      makePolygon(
-        grid[i].x,
-        grid[i].y,
-        Math.random() * 10,
-        Math.random() * 20,
-        null,
-        "lightyellow",
-        true
-      );
+      makePolygon(grid[i].x, grid[i].y, 10, 10, null, "lightyellow", true);
       c.stroke();
     }
   }
@@ -289,20 +281,24 @@ class Chicken {
     );
     plotGrids(this.obj, this.allPointsArr, this.bodyGrid, this.lerpValue);
 
-    this.renderOutline(this.fullBodyOutline, "blue", 1);
-    this.renderPattern(this.bodyGrid);
-    c.restore();
-
-    this.renderOutline(this.headOutline, "black", 1);
-    c.restore();
-
     this.renderBeak();
     this.renderFeet();
 
-    this.renderOutline(this.fullBodyOutline);
+    c.fillStyle = "rgba(0, 0, 255, .05)";
+    this.renderOutline(this.fullBodyOutline, "blue", 1);
+    c.fill();
+    this.renderPattern(this.bodyGrid);
+    c.restore();
+
+    c.fillStyle = "rgba(255, 255, 255, 1)";
+    this.renderOutline(this.headOutline, "blue", 1);
+    c.fill();
     c.restore();
 
     this.renderOutline(this.headOutline);
+    c.restore();
+
+    this.renderOutline(this.fullBodyOutline);
     c.restore();
   }
 }

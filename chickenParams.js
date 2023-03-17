@@ -19,40 +19,61 @@ let chickenParams = {
   majorParams: {
     sectionLabel: "Main",
     resolution: {
-      type: "slider",
+      type: "slider-one-axis",
+      objMap: ["resolution"],
       label: "Resolution",
       value: 20,
-      range: { min: 1, max: 20 },
+      range: { min: 3, max: 20 },
     },
     layout: {
-      type: "slider",
+      type: "slider-two-axes",
       label: "Layout",
       subLabels: { 1: "Cols", 2: "Rows" },
-      value: { cols: 1, rows: 1 },
+      value: { cols: 1, rows: 2 },
       range: { min: 1, max: 5 },
     },
   },
   head: {
     sectionLabel: "Head",
     size: {
+      type: "slider-one-axis",
       label: "Head Size",
+      objMap: ["obj", "head", "size"],
       value: 20,
-      min: 1,
-      max: 50,
+      range: { min: 1, max: 100 },
     },
     posOffset: {
+      type: "slider-two-axes",
       label: "Position",
+      subLabels: { 1: "x", 2: "y" },
+      objMap: [
+        ["obj", "head", "posOffset", "x"],
+        ["obj", "head", "posOffset", "y"],
+      ],
       value: { x: -80, y: -200 },
-      min: 1,
-      max: 20,
+      range: { min: -250, max: 250 },
     },
     cutOff: {
+      type: "slider-two-axes",
       label: "Cutoff Point",
+      subLabels: { 1: "top", 2: "bottom" },
+      objMap: [
+        ["obj", "head", "cutOff", "top"],
+        ["obj", "head", "cutOff", "bottom"],
+      ],
       value: { top: 20, bottom: 20 },
+      range: { min: 1, max: 40 },
     },
     ridgeOff: {
+      type: "slider-two-axes",
       label: "Head Ridges",
+      subLabels: { 1: "xOff", 2: "yOff" },
+      objMap: [
+        ["obj", "head", "ridgeOff", "x"],
+        ["obj", "head", "ridgeOff", "y"],
+      ],
       value: { x: 5, y: 5 },
+      range: { min: -50, max: 50 },
     },
   },
   beak: {
@@ -61,10 +82,11 @@ let chickenParams = {
   body: {
     sectionLabel: "Body",
     size: {
+      type: "slider-one-axis",
       label: "Body Size",
+      objMap: ["obj", "body", "size"],
       value: 80,
-      min: 1,
-      max: 250,
+      range: { min: 1, max: 250 },
     },
     posOffset: {
       label: "Position",
@@ -82,10 +104,11 @@ let chickenParams = {
   leg: {
     sectionLabel: "Legs",
     size: {
+      type: "slider-one-axis",
       label: "Leg Size",
+      objMap: ["obj", ["leftLeg", "rightLeg"], "size"],
       value: 20,
-      min: 1,
-      max: 50,
+      range: { min: 1, max: 250 },
     },
     posOffset: {
       label: "Position",

@@ -9,7 +9,7 @@ h2 {
 }
 
 h3 {
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
@@ -63,7 +63,7 @@ html {
 #rightHandPanel {
   border-left: 1px solid black;
   height: auto;
-  padding: 12px;
+  padding: 8px;
   width: 70%;
 }
 
@@ -79,7 +79,7 @@ select {
 
 .lefthand-selector-container {
   display: flex;
-  padding: 8px 12px;
+  padding: 8px 8px;
 }
 
 .lefthand-selector-container:hover {
@@ -117,4 +117,40 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 10px;
   height: 1rem;
   width: 1rem;
+}
+
+#selectorMenu {
+  border: 1px solid black;
+  margin: 8px;
+}
+
+.menu-section-container {
+}
+
+.menu-subsection-container {
+  margin: 8px 0px;
+}
+
+.split-sliders-container {
+  display: block;
+  width: 100%;
+}
+
+.split-slider-container {
+  display: flex;
+  width: 50%;
+}
+
+.split-slider-container input {
+  width: 100%;
+  margin-left: 8px;
+}
+
+.menu-selector {
+  border: 1px solid black;
+  display: flex;
+  width: 100%;
+  height: 32px;
+  align-items: center;
+  justify-content: left;
 }

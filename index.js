@@ -1,5 +1,9 @@
-let chickenArr, chickenFramesArr, patternCols, patternRows;
+let chickenArr, chickenFramesArr;
 let chickenCount = 0;
+let layout = {
+  cols: null,
+  rows: null,
+};
 
 const init = () => {
   mainCanvas = document.getElementById("mainCanvas");
@@ -15,14 +19,14 @@ const init = () => {
   const draw = (t) => {
     chickenArr = [];
     chickenFramesArr = [];
-    patternCols = chickenParams.majorParams.layout.value.cols;
-    patternRows = chickenParams.majorParams.layout.value.rows;
+    layout.cols = chickenParams.majorParams.layout.value.cols;
+    layout.rows = chickenParams.majorParams.layout.value.rows;
 
-    for (let i = 0; i < patternCols; i++) {
-      for (let j = 0; j < patternRows; j++) {
+    for (let i = 0; i < layout.cols; i++) {
+      for (let j = 0; j < layout.rows; j++) {
         chickenCount += 1;
-        let frameWidth = w / patternCols;
-        let frameHeight = h / patternRows;
+        let frameWidth = w / layout.cols;
+        let frameHeight = h / layout.rows;
         chickenArr.push(
           new Chicken(
             chickenCount,

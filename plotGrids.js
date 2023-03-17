@@ -17,7 +17,7 @@ function plotGrids(obj, allPoints, gridArr, lerpValue) {
 
   let bottomLine = {
     start: {
-      x: allPoints.head[head25p].x - obj.body.bustPoint.x - obj.body.size,
+      x: topLine.start.x,
       y: allPoints.leftLeg[leftLeg100p].y + obj.leftLeg.size,
     },
     end: {
