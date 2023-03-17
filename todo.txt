@@ -1,0 +1,3 @@
+-- To-do
+
+- Refactor interpolation functions for lines & curves; consolidate them into one function :)

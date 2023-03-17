@@ -4,29 +4,41 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>chicken tool</title>
-    <link rel="stylesheet" href="./style.css" />
+    <title>Chicken Generator</title>
+    <link rel="stylesheet" href="reset.css" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <canvas id="mainCanvas"></canvas>
-
-    <div id="mydiv">
-      <div id="mydivheader">Config</div>
-      <div class="row">
-        <div class="col">
-          <p>Which Chicken?</p>
+    <div class="container">
+      <canvas id="mainCanvas" class="box"></canvas>
+      <div id="controlPanel" class="box control-panel">
+        <div id="controlPanelHeader">
+          <p>Control Panel</p>
+          <p>[hide]</p>
         </div>
-        <div class="col">
-          <select name="chickenSelector" id="chickenSelector"></select>
+        <!-- <div id="topMenu">[Top Menu Tabbed Options]</div> -->
+        <div id="allControlsContainer">
+          <div id="leftHandMenu">
+            <div id="chickenSelectorContainer">
+              <select id="chickenSelector" name="chickens"></select>
+            </div>
+            <div id="selectorMenu">[Main Menu Items Go Here]</div>
+          </div>
+          <div id="rightHandPanel">
+            [Switches to whatever the selected part is for the selected chicken]
+          </div>
         </div>
       </div>
-
-      <div id="controlsContainer"></div>
     </div>
 
     <script src="./gui.js"></script>
+    <script src="./dragElement.js"></script>
     <script src="./helpers.js"></script>
+    <script src="./chickenParams.js"></script>
+    <script src="./plotOutlines.js"></script>
+    <script src="./plotGrids.js"></script>
+    <script src="./setAndRenderChickens.js"></script>
     <script src="./chicken.js"></script>
-    <script src="./main.js"></script>
+    <script src="./index.js"></script>
   </body>
 </html>

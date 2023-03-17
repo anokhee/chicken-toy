@@ -1,0 +1,120 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+
+h2 {
+  color: blue;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+html {
+  font-size: 0.85rem;
+}
+
+.container {
+  position: relative;
+}
+
+.box {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.control-panel {
+  font-family: "Space Grotesk", monospace;
+  display: block;
+  width: 480px;
+  height: auto;
+  z-index: 9;
+  background-color: white;
+  box-shadow: 4px 4px 8px rgba(92, 8, 237, 0.25);
+}
+
+#controlPanelHeader {
+  border-bottom: 1px solid black;
+  cursor: move;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+#chickenSelectorContainer {
+  height: auto;
+}
+
+#allControlsContainer {
+  display: flex;
+  height: auto;
+}
+
+#leftHandMenu {
+  height: 300px;
+  width: 30%;
+}
+
+#rightHandPanel {
+  border-left: 1px solid black;
+  height: auto;
+  padding: 12px;
+  width: 70%;
+}
+
+select {
+  align-items: center;
+  appearance: menulist;
+  border: 1px solid black;
+  display: flex;
+  height: 32px;
+  width: auto;
+  margin: 8px;
+}
+
+.lefthand-selector-container {
+  display: flex;
+  padding: 8px 12px;
+}
+
+.lefthand-selector-container:hover {
+  background-color: black;
+  color: white;
+}
+
+.selected {
+  background-color: yellow;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 15rem;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: #053a5f;
+  height: 1rem;
+}
+
+/******** Firefox ********/
+input[type="range"]::-moz-range-track {
+  background: #053a5f;
+  height: 1rem;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  background-color: #5cd5eb;
+  border-radius: 10px;
+  height: 1rem;
+  width: 1rem;
+}

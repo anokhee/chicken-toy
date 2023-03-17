@@ -1,7 +1,5 @@
-let patternCols = 1;
-let patternRows = 1;
-let chickenFramesArr = [];
-let chickenArr = [];
+let chickenArr, chickenFramesArr, patternCols, patternRows;
+let chickenCount = 0;
 
 const init = () => {
   mainCanvas = document.getElementById("mainCanvas");
@@ -15,21 +13,26 @@ const init = () => {
   };
 
   const draw = (t) => {
-    console.log("it works");
     chickenArr = [];
+    chickenFramesArr = [];
+    patternCols = chickenParams.majorParams.layout.value.cols;
+    patternRows = chickenParams.majorParams.layout.value.rows;
+
     for (let i = 0; i < patternCols; i++) {
       for (let j = 0; j < patternRows; j++) {
-        let blockWidth = w / patternCols;
-        let blockHeight = h / patternRows;
+        chickenCount += 1;
+        let frameWidth = w / patternCols;
+        let frameHeight = h / patternRows;
         chickenArr.push(
           new Chicken(
-            blockWidth / 2 + blockWidth * i,
-            blockHeight / 2 + blockHeight * j,
-            blockWidth,
-            blockHeight
+            chickenCount,
+            frameWidth / 2 + frameWidth * i,
+            frameHeight / 2 + frameHeight * j,
+            frameWidth,
+            frameHeight
           )
         );
-        chickenFramesArr.push([i, blockWidth, blockHeight]);
+        chickenFramesArr.push([i, frameWidth, frameHeight]);
       }
     }
     renderChickens(chickenArr);
@@ -40,7 +43,7 @@ const init = () => {
   window.removeEventListener("load", init);
   window.addEventListener("resize", resize);
   resize();
-  generateGUI(draw(), chickenArr);
+  createGUI(chickenArr);
   window.requestAnimationFrame(draw);
 };
 

@@ -1,5 +1,6 @@
 class Chicken {
-  constructor(xPos, yPos, frameWidth, frameHeight) {
+  constructor(id, xPos, yPos, frameWidth, frameHeight) {
+    this.id = id;
     this.xPos = xPos;
     this.yPos = yPos;
     this.frameWidth = frameWidth;
@@ -7,8 +8,9 @@ class Chicken {
     this.resolution = chickenParams.majorParams.resolution.value;
     this.lerpValue = 1 / this.resolution;
 
-    // Full Outline
-    this.fullOutlineParams = {
+    // Customizable with GUI
+
+    this.obj = {
       head: {
         size: chickenParams.head.size.value,
         posOffset: {
@@ -16,7 +18,7 @@ class Chicken {
           y: chickenParams.head.posOffset.value.y,
         },
         pointsArr: [],
-        markersArr: (this.headMarkers = []),
+
         cutOff: {
           top: chickenParams.head.cutOff.value.top,
           bottom: chickenParams.head.cutOff.value.bottom,
@@ -40,7 +42,6 @@ class Chicken {
           x: chickenParams.body.bustPoint.value.x,
           y: chickenParams.body.bustPoint.value.x,
         },
-        markersArr: (this.bodyMarkers = []),
       },
       rightLeg: {
         size: chickenParams.leg.size.value,
@@ -49,7 +50,6 @@ class Chicken {
           y: chickenParams.leg.posOffset.value.y,
         },
         pointsArr: [],
-        markersArr: (this.rightLegMarkers = []),
         length: chickenParams.leg.length.value,
       },
       leftLeg: {
@@ -59,14 +59,12 @@ class Chicken {
           y: chickenParams.leg.posOffset.value.y,
         },
         pointsArr: [],
-        markersArr: (this.leftLegMarkers = []),
         length: chickenParams.leg.length.value,
       },
       tail: {
         size: 5,
         posOffset: { x: 150, y: -105 },
         pointsArr: (this.tailPoints = []),
-        markersArr: (this.tailMarkers = []),
       },
     };
 
@@ -95,14 +93,11 @@ class Chicken {
         cp3: { x: 0, y: 0 },
       },
     };
-
-    // Tail
-    this.tailParams = {};
   }
 
-  setupGuides() {
-    for (const eachPart in this.fullOutlineParams) {
-      let part = this.fullOutlineParams[eachPart];
+  setupGuides(show) {
+    for (const eachPart in this.obj) {
+      let part = this.obj[eachPart];
       makePolygon(
         this.xPos + part.posOffset.x,
         this.yPos + part.posOffset.y,
@@ -110,284 +105,49 @@ class Chicken {
         this.resolution,
         part.pointsArr,
         "white",
-        true
-      );
-
-      part.markersArr.push(
-        {
-          x: this.xPos + part.posOffset.x - part.size,
-          y: this.yPos + part.posOffset.y,
-        },
-        {
-          x: this.xPos + part.posOffset.x,
-          y: this.yPos + part.posOffset.y - part.size,
-        },
-        {
-          x: this.xPos + part.posOffset.x + part.size,
-          y: this.yPos + part.posOffset.y,
-        },
-
-        {
-          x: this.xPos + part.posOffset.x,
-          y: this.yPos + part.posOffset.y + part.size,
-        }
+        show
       );
     }
+
+    this.headPointsArr = this.obj.head.pointsArr;
+    this.bodyPointsArr = this.obj.body.pointsArr;
+    this.rightLegPointsArr = this.obj.rightLeg.pointsArr;
+    this.leftLegPointsArr = this.obj.leftLeg.pointsArr;
+    this.tailPointsArr = this.obj.tail.pointsArr;
+
+    this.allPointsArr = {
+      head: this.headPointsArr,
+      body: this.bodyPointsArr,
+      rightLeg: this.rightLegPointsArr,
+      leftLeg: this.leftLegPointsArr,
+      tail: this.tailPointsArr,
+    };
   }
 
   clearOutlines() {
     this.fullBodyOutline = [];
-    this.fullOutlineParams.head.pointsArr = [];
-    this.fullOutlineParams.body.pointsArr = [];
+    this.obj.head.pointsArr = [];
+    this.obj.body.pointsArr = [];
 
     this.headOutline = [];
     this.headOutlineTopRow = [];
     this.headOutlineBottomRow = [];
 
-    this.fullOutlineParams.rightLeg.pointsArr = [];
-    this.fullOutlineParams.leftLeg.pointsArr = [];
+    this.obj.rightLeg.pointsArr = [];
+    this.obj.leftLeg.pointsArr = [];
 
     this.bodyGrid = [];
     this.headGrid = [];
   }
 
-  plotOutlines() {
-    this.headConnectingRow = [];
-    this.headConnectingLine = {
-      top: {},
-      bottom: {},
-    };
+  renderOutline(outline, color, lineWidth) {
+    c.strokeStyle = color;
+    c.lineWidth = lineWidth;
 
-    let headPointsArr = this.fullOutlineParams.head.pointsArr;
-    let bodyPointsArr = this.fullOutlineParams.body.pointsArr;
-    let rightLegPointsArr = this.fullOutlineParams.rightLeg.pointsArr;
-    let leftLegPointsArr = this.fullOutlineParams.leftLeg.pointsArr;
-    let tailPointsArr = this.fullOutlineParams.tail.pointsArr;
-
-    this.bodyBeziersTop = {
-      b1: [
-        [
-          headPointsArr[Math.floor(headPointsArr.length * 0.5 - 1)].x,
-          headPointsArr[Math.floor(headPointsArr.length * 0.5 - 1)].y,
-        ],
-        [
-          (headPointsArr[Math.floor(headPointsArr.length * 0.5)].x +
-            bodyPointsArr[Math.floor(bodyPointsArr.length * 0.25)].x) /
-            2,
-          (headPointsArr[Math.floor(headPointsArr.length * 0.5)].y +
-            bodyPointsArr[Math.floor(bodyPointsArr.length * 0.25)].y) /
-            2 -
-            75,
-        ],
-        [
-          bodyPointsArr[Math.floor(bodyPointsArr.length * 0.75)].x,
-          bodyPointsArr[Math.floor(bodyPointsArr.length * 0.75)].y,
-        ],
-      ],
-      b2: [
-        [
-          bodyPointsArr[Math.floor(bodyPointsArr.length * 0.75)].x,
-          bodyPointsArr[Math.floor(bodyPointsArr.length * 0.75)].y,
-        ],
-        [
-          bodyPointsArr[Math.floor(bodyPointsArr.length * 0.75)].x + 50,
-          bodyPointsArr[Math.floor(bodyPointsArr.length * 0.75)].y + 45,
-        ],
-        [
-          tailPointsArr[Math.floor(tailPointsArr.length * 0)].x,
-          tailPointsArr[Math.floor(tailPointsArr.length * 0)].y,
-        ],
-      ],
-    };
-
-    this.bodyBeziersBottom = {
-      b1: [
-        [
-          tailPointsArr[Math.floor(tailPointsArr.length * 0)].x,
-          tailPointsArr[Math.floor(tailPointsArr.length * 0)].y,
-        ],
-        [
-          bodyPointsArr[Math.floor(bodyPointsArr.length * 0.5)].x +
-            this.fullOutlineParams.body.caboosePoint.x,
-          bodyPointsArr[Math.floor(bodyPointsArr.length * 0.5)].y +
-            this.fullOutlineParams.body.caboosePoint.y,
-        ],
-        [
-          rightLegPointsArr[Math.floor(rightLegPointsArr.length * 0.5)].x,
-          rightLegPointsArr[Math.floor(rightLegPointsArr.length * 0.5)].y,
-        ],
-      ],
-      b2: [
-        [
-          rightLegPointsArr[Math.floor(rightLegPointsArr.length * 0.5)].x,
-          rightLegPointsArr[Math.floor(rightLegPointsArr.length * 0.5)].y,
-        ],
-        [bodyPointsArr[0].x - 80, bodyPointsArr[0].y],
-        [
-          headPointsArr[Math.floor(headPointsArr.length * 0.75)].x,
-          headPointsArr[Math.floor(headPointsArr.length * 0.75)].y,
-        ],
-      ],
-    };
-
-    // Arc around the top of the head
-    for (let i = 0; i < Math.floor(headPointsArr.length * 0.5); i++) {
-      this.fullBodyOutline.push({
-        x: headPointsArr[headPointsArr.length - i - 1].x,
-        y: headPointsArr[headPointsArr.length - i - 1].y,
-      });
-    }
-
-    // Curves from the base of the head to the end of the tail
-    for (const eachCurve in this.bodyBeziersTop) {
-      let curve = this.bodyBeziersTop[eachCurve];
-      for (let i = 0; i < 1; i += this.lerpValue) {
-        this.fullBodyOutline.push(lerpCurve(curve[0], curve[1], curve[2], i));
-      }
-    }
-
-    // Curves from the end of the tail back around the bottom to the right leg
-    for (let i = 0; i < 1; i += this.lerpValue) {
-      this.fullBodyOutline.push(
-        lerpCurve(
-          this.bodyBeziersBottom.b1[0],
-          this.bodyBeziersBottom.b1[1],
-          this.bodyBeziersBottom.b1[2],
-          i
-        )
-      );
-    }
-
-    // // Curve around the right leg
-    for (let i = Math.floor(rightLegPointsArr.length / 2); i > 0; i--) {
-      this.fullBodyOutline.push({
-        x: rightLegPointsArr[i].x,
-        y: rightLegPointsArr[i].y,
-      });
-    }
-
-    // // // Important -- This point ensures that the right leg ENDS where it needs to!
-    for (let i = 0; i < 1; i += this.lerpValue) {
-      this.fullBodyOutline.push(
-        lerpCurve(
-          [rightLegPointsArr[0].x, rightLegPointsArr[0].y],
-          [
-            (rightLegPointsArr[0].x +
-              leftLegPointsArr[Math.floor(leftLegPointsArr.length / 2)].x) /
-              2,
-            rightLegPointsArr[0].y,
-          ],
-          [
-            leftLegPointsArr[Math.floor(leftLegPointsArr.length / 2)].x,
-            leftLegPointsArr[Math.floor(leftLegPointsArr.length / 2)].y,
-          ],
-          i
-        )
-      );
-    }
-
-    // // Curve around the left leg
-    for (let i = Math.floor(leftLegPointsArr.length / 2); i > 0; i--) {
-      this.fullBodyOutline.push({
-        x: leftLegPointsArr[i].x,
-        y: leftLegPointsArr[i].y,
-      });
-    }
-
-    // // Curve along the bottom of the neck
-    for (let i = 0; i < 1; i += this.lerpValue) {
-      this.fullBodyOutline.push(
-        lerpCurve(
-          [leftLegPointsArr[0].x, leftLegPointsArr[0].y],
-          [
-            bodyPointsArr[0].x - this.fullOutlineParams.body.bustPoint.x,
-            bodyPointsArr[0].y,
-          ],
-          [
-            headPointsArr[Math.floor(headPointsArr.length / 4 - 1)].x,
-            headPointsArr[Math.floor(headPointsArr.length / 4 - 1)].y,
-          ],
-          i
-        )
-      );
-    }
-
-    // // Arc around the bottom of the head
-    for (
-      let i = Math.floor(this.fullOutlineParams.head.pointsArr.length / 4);
-      i >= 0;
-      i--
-    ) {
-      this.fullBodyOutline.push({
-        x: this.fullOutlineParams.head.pointsArr[i].x,
-        y: this.fullOutlineParams.head.pointsArr[i].y,
-      });
-    }
-
-    // // Head Outline
-    for (let i = 0; i < this.fullOutlineParams.head.cutOff.top; i++) {
-      this.headOutlineTopRow.push(this.fullBodyOutline[i]);
-    }
-
-    for (let i = this.fullOutlineParams.head.cutOff.bottom; i > 0; i--) {
-      this.headOutlineBottomRow.push(
-        this.fullBodyOutline[this.fullBodyOutline.length - 1 - i]
-      );
-    }
-
-    // // Connecting Line functions
-    this.headConnectingLine.top = {
-      x: this.headOutlineTopRow[this.headOutlineTopRow.length - 1].x,
-      y: this.headOutlineTopRow[this.headOutlineTopRow.length - 1].y,
-    };
-
-    this.headConnectingLine.bottom = {
-      x: this.headOutlineBottomRow[0].x,
-      y: this.headOutlineBottomRow[0].y,
-    };
-
-    for (let i = 0; i < 1; i += this.lerpValue) {
-      this.headConnectingRow.push(
-        lerpLine(
-          [this.headConnectingLine.top.x, this.headConnectingLine.top.y],
-          [this.headConnectingLine.bottom.x, this.headConnectingLine.bottom.y],
-          i
-        )
-      );
-    }
-
-    for (let i = 0; i < this.headOutlineTopRow.length; i++) {
-      this.headOutline.push(this.headOutlineTopRow[i]);
-    }
-
-    for (let i = 0; i < this.headConnectingRow.length; i++) {
-      if (i % 2 === 0) {
-        this.headOutline.push({
-          x: this.headConnectingRow[i].x,
-          y: this.headConnectingRow[i].y,
-        });
-      } else {
-        this.headOutline.push({
-          x:
-            this.headConnectingRow[i].x +
-            this.fullOutlineParams.head.ridgeOff.x,
-          y:
-            this.headConnectingRow[i].y +
-            this.fullOutlineParams.head.ridgeOff.y,
-        });
-      }
-    }
-
-    for (let i = 0; i < this.headOutlineBottomRow.length; i++) {
-      this.headOutline.push(this.headOutlineBottomRow[i]);
-    }
-  }
-
-  renderOutline(outline) {
     c.save();
     c.beginPath();
     c.moveTo(outline[0].x, outline[0].y);
-    for (let i = 0; i < outline.length; i++) {
+    for (let i = 0; i < outline.length - 2; i++) {
       c.lineTo(outline[i].x, outline[i].y);
     }
     c.lineTo(outline[outline.length - 1].x, outline[outline.length - 1].y);
@@ -395,106 +155,16 @@ class Chicken {
     c.clip();
   }
 
-  plotGrid(gridArr, spacingX, spacingY) {
-    let headPointsArr = this.fullOutlineParams.head.pointsArr;
-    let leftLegPointsArr = this.fullOutlineParams.leftLeg.pointsArr;
-    let tailPointsArr = this.fullOutlineParams.tail.pointsArr;
-
-    let topLine = {
-      start: {
-        x:
-          headPointsArr[Math.floor(headPointsArr.length * 0.5)].x -
-          this.fullOutlineParams.body.bustPoint.x -
-          this.fullOutlineParams.body.size,
-        y:
-          headPointsArr[Math.floor(headPointsArr.length * 0.25)].y -
-          this.fullOutlineParams.body.bustPoint.y -
-          this.fullOutlineParams.body.size,
-      },
-      end: {
-        x:
-          tailPointsArr[Math.floor(tailPointsArr.length * 0.5)].x +
-          this.fullOutlineParams.body.caboosePoint.x +
-          this.fullOutlineParams.body.size,
-        y:
-          headPointsArr[Math.floor(headPointsArr.length * 0.25)].y -
-          this.fullOutlineParams.body.bustPoint.y -
-          this.fullOutlineParams.body.size,
-      },
-    };
-
-    let bottomLine = {
-      start: {
-        x:
-          headPointsArr[Math.floor(headPointsArr.length * 0.5)].x -
-          this.fullOutlineParams.body.bustPoint.x -
-          this.fullOutlineParams.body.size,
-        y:
-          leftLegPointsArr[Math.floor(leftLegPointsArr.length - 1)].y +
-          this.fullOutlineParams.leftLeg.size,
-      },
-      end: {
-        x:
-          tailPointsArr[Math.floor(tailPointsArr.length * 0.5)].x +
-          this.fullOutlineParams.body.caboosePoint.x +
-          this.fullOutlineParams.body.size,
-        y:
-          leftLegPointsArr[Math.floor(leftLegPointsArr.length - 1)].y +
-          this.fullOutlineParams.leftLeg.size,
-      },
-    };
-
-    let topRow = [];
-    let bottomRow = [];
-
-    for (let i = 0; i < 1; i += spacingX) {
-      topRow.push(
-        lerpLine(
-          [topLine.start.x, topLine.start.y],
-          [topLine.end.x, topLine.end.y],
-          i
-        )
-      );
-    }
-    for (let i = 1; i > 0; i -= spacingY) {
-      bottomRow.push(
-        lerpLine(
-          [bottomLine.start.x, bottomLine.start.y],
-          [bottomLine.end.x, bottomLine.end.y],
-          i
-        )
-      );
-    }
-
-    for (let i = 0; i < bottomRow.length - 1; i++) {
-      let topRowPoint = {
-        x: topRow[i].x,
-        y: topRow[i].y,
-      };
-      let bottomRowPoint = {
-        x: bottomRow[bottomRow.length - i - 1].x,
-        y: bottomRow[bottomRow.length - i - 1].y,
-      };
-
-      for (let q = 1; q > 0; q -= this.lerpValue) {
-        gridArr.push(
-          lerpLine(
-            [topRowPoint.x, topRowPoint.y],
-            [bottomRowPoint.x, bottomRowPoint.y],
-            q
-          )
-        );
-      }
-    }
-    for (let i = 0; i < gridArr.length; i++) {
+  renderPattern(grid) {
+    for (let i = 0; i < grid.length; i++) {
       c.beginPath();
       makePolygon(
-        gridArr[i].x,
-        gridArr[i].y,
-        Math.random() * 8,
+        grid[i].x,
+        grid[i].y,
         Math.random() * 10,
+        Math.random() * 20,
         null,
-        `lightyellow`,
+        "lightyellow",
         true
       );
       c.stroke();
@@ -506,40 +176,32 @@ class Chicken {
       let beakPoints = {
         center: {
           start: {
-            x: this.fullOutlineParams.head.pointsArr[
-              Math.floor(this.fullOutlineParams.head.pointsArr.length / 2)
-            ].x,
-            y: this.fullOutlineParams.head.pointsArr[
-              Math.floor(this.fullOutlineParams.head.pointsArr.length / 2)
+            x: this.obj.head.pointsArr[0].x,
+            y: this.obj.head.pointsArr[
+              Math.floor(this.obj.head.pointsArr.length / 2)
             ].y,
           },
           end: {
-            x:
-              this.fullOutlineParams.head.pointsArr[0].x +
-              this.beakParams.length,
-            y: this.fullOutlineParams.head.pointsArr[0].y,
+            x: this.obj.head.pointsArr[0].x + this.beakParams.length,
+            y: this.obj.head.pointsArr[0].y,
           },
         },
         top: {
           start: {
-            x: this.fullOutlineParams.head.pointsArr[
+            x: this.obj.head.pointsArr[
               Math.floor(
-                this.fullOutlineParams.head.pointsArr.length -
-                  this.beakParams.topCutoff
+                this.obj.head.pointsArr.length - this.beakParams.topCutoff
               )
             ].x,
-            y: this.fullOutlineParams.head.pointsArr[
+            y: this.obj.head.pointsArr[
               Math.floor(
-                this.fullOutlineParams.head.pointsArr.length -
-                  this.beakParams.topCutoff
+                this.obj.head.pointsArr.length - this.beakParams.topCutoff
               )
             ].y,
           },
           end: {
-            x:
-              this.fullOutlineParams.head.pointsArr[0].x +
-              this.beakParams.length,
-            y: this.fullOutlineParams.head.pointsArr[0].y,
+            x: this.obj.head.pointsArr[0].x + this.beakParams.length,
+            y: this.obj.head.pointsArr[0].y,
           },
         },
       };
@@ -569,10 +231,7 @@ class Chicken {
   }
 
   renderFeet() {
-    let legsArr = [
-      this.fullOutlineParams.leftLeg,
-      this.fullOutlineParams.rightLeg,
-    ];
+    let legsArr = [this.obj.leftLeg, this.obj.rightLeg];
     let numToes = Math.floor(Math.random() * (5 - 2) + 2);
     c.beginPath();
     for (let i = 0; i < 2; i++) {
@@ -582,23 +241,16 @@ class Chicken {
       );
       c.lineTo(
         this.xPos + legsArr[i].posOffset.x,
-        this.yPos +
-          legsArr[i].posOffset.y +
-          this.fullOutlineParams.leftLeg.length
+        this.yPos + legsArr[i].posOffset.y + this.obj.leftLeg.length
       );
       for (let j = 0; j < numToes; j++) {
         c.moveTo(
           this.xPos + legsArr[i].posOffset.x,
-          this.yPos +
-            legsArr[i].posOffset.y +
-            this.fullOutlineParams.leftLeg.length
+          this.yPos + legsArr[i].posOffset.y + this.obj.leftLeg.length
         );
         c.lineTo(
           this.xPos + legsArr[i].posOffset.x - 35,
-          this.yPos +
-            legsArr[i].posOffset.y +
-            this.fullOutlineParams.leftLeg.length +
-            5 * j
+          this.yPos + legsArr[i].posOffset.y + this.obj.leftLeg.length + 5 * j
         );
       }
     }
@@ -606,7 +258,6 @@ class Chicken {
   }
 
   renderFrame() {
-    c.fillStyle = "rgba(255, 255, 248, .9)";
     c.beginPath();
     c.rect(
       this.xPos - this.frameWidth / 2,
@@ -618,40 +269,37 @@ class Chicken {
     c.stroke();
   }
 
+  clearFill() {
+    c.fillStyle = c.fillStyle = "rgba(0, 0, 0, 0)";
+  }
+
   render() {
-    c.strokeStyle = "rgba(0, 0, 255, 0)";
-    this.renderFrame();
     this.clearOutlines();
 
-    c.strokeStyle = "blue";
-    c.lineWidth = 1;
-    this.setupGuides();
-    c.fillStyle = "orange";
-    this.renderBeak();
+    c.fillStyle = "white";
+    this.renderFrame();
 
+    this.setupGuides(true);
+    plotOutlines(
+      this.obj,
+      this.allPointsArr,
+      this.fullBodyOutline,
+      this.headOutline,
+      this.lerpValue
+    );
+    plotGrids(this.obj, this.allPointsArr, this.bodyGrid, this.lerpValue);
+
+    this.renderOutline(this.fullBodyOutline, "blue", 1);
+    this.renderPattern(this.bodyGrid);
+    c.restore();
+
+    this.renderOutline(this.headOutline, "black", 1);
+    c.restore();
+
+    this.renderBeak();
     this.renderFeet();
 
-    c.fillStyle = "rgba(255, 255, 255, .75)";
-    this.plotOutlines();
     this.renderOutline(this.fullBodyOutline);
-
-    c.fill();
-
-    this.plotGrid(this.bodyGrid, this.lerpValue, this.lerpValue);
-
-    c.restore();
-    c.moveTo(0, 0);
-
-    c.fillStyle = "rgba(255, 225, 245, .8)";
-    this.renderOutline(this.headOutline);
-    c.fill();
-    c.stroke();
-    c.restore();
-
-    c.fillStyle = "rgba(0, 0, 0, 0)";
-    this.renderOutline(this.fullBodyOutline);
-
-    c.fill();
     c.restore();
 
     this.renderOutline(this.headOutline);
