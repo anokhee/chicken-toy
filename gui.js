@@ -52,6 +52,7 @@ function createRightHandPanel(chicken) {
     sectionContainer.style.display = "hidden";
 
     let sectionHeader = document.createElement("h3");
+    sectionHeader.className = "menu-section-header";
     sectionHeader.innerHTML = `${section.sectionLabel}`;
 
     rightHandPanel.appendChild(sectionContainer);
@@ -65,6 +66,7 @@ function createRightHandPanel(chicken) {
         subsectionContainer.className = "menu-subsection-container";
 
         let subsectionHeader = document.createElement("h4");
+        subsectionHeader.className = "menu-subsection-header";
         subsectionHeader.innerHTML = `${subsection.label}`;
 
         sectionContainer.appendChild(subsectionContainer);
@@ -105,7 +107,6 @@ function generateSlider(chickenId, type, subsection, objMap, container) {
     slider.min = subsection.range.min;
     slider.max = subsection.range.max;
     slider.value = subsection.value;
-    slider.step = 0.01;
 
     slider.addEventListener("input", function () {
       setChickenValues(chickenId, subsection, objMap, this.value);
@@ -121,7 +122,7 @@ function generateSlider(chickenId, type, subsection, objMap, container) {
     splitContainer1.className = "split-slider-container";
 
     let sliderLabel1 = document.createElement("p");
-    sliderLabel1.innerHTML = `${Object.entries(subsection.value)[0][0]}`;
+    sliderLabel1.innerHTML = `${subsection.subLabels[1]}`;
 
     let slider1 = document.createElement("input");
     slider1.type = "range";
@@ -143,7 +144,7 @@ function generateSlider(chickenId, type, subsection, objMap, container) {
     splitContainer2.className = "split-slider-container";
 
     let sliderLabel2 = document.createElement("p");
-    sliderLabel2.innerHTML = `${Object.entries(subsection.value)[1][0]}`;
+    sliderLabel2.innerHTML = `${subsection.subLabels[2]}`;
 
     let slider2 = document.createElement("input");
     slider2.type = "range";

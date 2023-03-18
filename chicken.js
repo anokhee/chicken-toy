@@ -6,7 +6,7 @@ class Chicken {
     this.frameWidth = frameWidth;
     this.frameHeight = frameHeight;
     this.resolution = chickenParams.majorParams.resolution.value;
-    this.lerpValue = 0.08;
+    this.lerpValue = 0.04;
 
     // Customizable with GUI
 
@@ -17,8 +17,10 @@ class Chicken {
           x: chickenParams.head.posOffset.value.x,
           y: chickenParams.head.posOffset.value.y,
         },
-        pointsArr: [],
-
+        neckCurve: {
+          x: chickenParams.head.neckCurve.value.x,
+          y: chickenParams.head.neckCurve.value.y,
+        },
         cutOff: {
           top: chickenParams.head.cutOff.value.top,
           bottom: chickenParams.head.cutOff.value.bottom,
@@ -27,6 +29,8 @@ class Chicken {
           x: chickenParams.head.ridgeOff.value.x,
           y: chickenParams.head.ridgeOff.value.y,
         },
+        ridgeLerp: chickenParams.head.ridgeLerp.value,
+        pointsArr: [],
       },
       body: {
         size: chickenParams.body.size.value,
@@ -96,6 +100,7 @@ class Chicken {
   }
 
   setupGuides(show) {
+    c.strokeStyle = "rgba(0, 0, 255, 1)";
     for (const eachPart in this.obj) {
       let part = this.obj[eachPart];
       makePolygon(
@@ -104,7 +109,7 @@ class Chicken {
         part.size,
         this.resolution,
         part.pointsArr,
-        "white",
+        null,
         show
       );
     }
@@ -157,13 +162,23 @@ class Chicken {
 
   renderPattern(grid) {
     for (let i = 0; i < grid.length; i++) {
+      let randColor = palette1[Math.floor(Math.random() * palette1.length)];
       c.beginPath();
-      makePolygon(grid[i].x, grid[i].y, 10, 10, null, "lightyellow", true);
+      makePolygon(
+        grid[i].x,
+        grid[i].y,
+        Math.random() * 5,
+        Math.random() * 5,
+        null,
+        "pink",
+        true
+      );
       c.stroke();
     }
   }
 
   renderBeak() {
+    c.strokeStyle = "rgba(0, 0, 255, 1)";
     if (this.resolution >= 4) {
       let beakPoints = {
         center: {
@@ -223,6 +238,8 @@ class Chicken {
   }
 
   renderFeet() {
+    c.strokeStyle = "rgba(0, 0, 255, 1)";
+
     let legsArr = [this.obj.leftLeg, this.obj.rightLeg];
     let numToes = Math.floor(Math.random() * (5 - 2) + 2);
     c.beginPath();
@@ -250,6 +267,7 @@ class Chicken {
   }
 
   renderFrame() {
+    c.strokeStyle = "rgba(0, 0, 0, 0)";
     c.beginPath();
     c.rect(
       this.xPos - this.frameWidth / 2,
@@ -268,7 +286,7 @@ class Chicken {
   render() {
     this.clearOutlines();
 
-    c.fillStyle = "white";
+    c.fillStyle = "rgba(255, 255, 255, 1";
     this.renderFrame();
 
     this.setupGuides(true);
@@ -279,18 +297,19 @@ class Chicken {
       this.headOutline,
       this.lerpValue
     );
+
     plotGrids(this.obj, this.allPointsArr, this.bodyGrid, this.lerpValue);
 
     this.renderBeak();
     this.renderFeet();
 
-    c.fillStyle = "rgba(0, 0, 255, .05)";
+    c.fillStyle = "rgba(255, 255, 0, .25)";
     this.renderOutline(this.fullBodyOutline, "blue", 1);
     c.fill();
     this.renderPattern(this.bodyGrid);
     c.restore();
 
-    c.fillStyle = "rgba(255, 255, 255, 1)";
+    c.fillStyle = "rgba(255, 255, 255, .95)";
     this.renderOutline(this.headOutline, "blue", 1);
     c.fill();
     c.restore();

@@ -1,4 +1,4 @@
-let opacity = "1";
+let opacity = ".25";
 let palette1 = [
   `rgba(61, 61, 61, ${opacity})`,
   `rgba(1, 138, 158, ${opacity})`,
@@ -29,7 +29,7 @@ let chickenParams = {
       type: "slider-two-axes",
       label: "Layout",
       subLabels: { 1: "Cols", 2: "Rows" },
-      value: { cols: 1, rows: 2 },
+      value: { cols: 1, rows: 1 },
       range: { min: 1, max: 5 },
     },
   },
@@ -45,7 +45,7 @@ let chickenParams = {
     posOffset: {
       type: "slider-two-axes",
       label: "Position",
-      subLabels: { 1: "x", 2: "y" },
+      subLabels: { 1: "X Off", 2: "Y Off" },
       objMap: [
         ["obj", "head", "posOffset", "x"],
         ["obj", "head", "posOffset", "y"],
@@ -64,9 +64,20 @@ let chickenParams = {
       value: { top: 20, bottom: 20 },
       range: { min: 1, max: 40 },
     },
+    neckCurve: {
+      type: "slider-two-axes",
+      label: "Neck Curve",
+      subLabels: { 1: "x", 2: "y" },
+      objMap: [
+        ["obj", "head", "neckCurve", "x"],
+        ["obj", "head", "neckCurve", "y"],
+      ],
+      value: { x: 0, y: -75 },
+      range: { min: -100, max: 100 },
+    },
     ridgeOff: {
       type: "slider-two-axes",
-      label: "Head Ridges",
+      label: "Head Ridge Offset",
       subLabels: { 1: "xOff", 2: "yOff" },
       objMap: [
         ["obj", "head", "ridgeOff", "x"],
@@ -74,6 +85,13 @@ let chickenParams = {
       ],
       value: { x: 5, y: 5 },
       range: { min: -50, max: 50 },
+    },
+    ridgeLerp: {
+      type: "slider-one-axis",
+      label: "Ridge Lerp",
+      objMap: ["obj", "head", "ridgeLerp"],
+      value: 5,
+      range: { min: 1, max: 100 },
     },
   },
   beak: {
@@ -89,16 +107,37 @@ let chickenParams = {
       range: { min: 1, max: 250 },
     },
     posOffset: {
+      type: "slider-two-axes",
       label: "Position",
+      subLabels: { 1: "xOff", 2: "yOff" },
+      objMap: [
+        ["obj", "body", "posOffset", "x"],
+        ["obj", "body", "posOffset", "y"],
+      ],
       value: { x: 0, y: 0 },
+      range: { min: -50, max: 50 },
     },
     caboosePoint: {
+      type: "slider-two-axes",
       label: "Caboose Point",
+      subLabels: { 1: "x", 2: "y" },
+      objMap: [
+        ["obj", "body", "caboosePoint", "x"],
+        ["obj", "body", "caboosePoint", "y"],
+      ],
       value: { x: 50, y: 20 },
+      range: { min: -150, max: 150 },
     },
     bustPoint: {
+      type: "slider-two-axes",
       label: "Bust Point",
-      value: { x: 60, y: 0 },
+      subLabels: { 1: "x", 2: "y" },
+      objMap: [
+        ["obj", "body", "bustPoint", "x"],
+        ["obj", "body", "bustPoint", "y"],
+      ],
+      value: { x: 60, y: 20 },
+      range: { min: -150, max: 150 },
     },
   },
   leg: {
@@ -108,17 +147,25 @@ let chickenParams = {
       label: "Leg Size",
       objMap: ["obj", ["leftLeg", "rightLeg"], "size"],
       value: 20,
-      range: { min: 1, max: 250 },
+      range: { min: 1, max: 50 },
     },
     posOffset: {
+      type: "slider-two-axes",
       label: "Position",
+      subLabels: { 1: "x", 2: "y" },
+      objMap: [
+        ["obj", ["leftLeg", "rightLeg"], "posOffset", "x"],
+        ["obj", ["leftLeg", "rightLeg"], "posOffset", "y"],
+      ],
       value: { x: 30, y: 50 },
+      range: { min: 0, max: 150 },
     },
     length: {
+      type: "slider-one-axis",
       label: "Length",
+      objMap: ["obj", ["leftLeg", "rightLeg"], "length"],
       value: 60,
-      min: 1,
-      max: 250,
+      range: { min: 1, max: 250 },
     },
   },
   tail: {

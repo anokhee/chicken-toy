@@ -1,20 +1,21 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&display=swap");
+
+html {
+  font-size: 0.85rem;
+  letter-spacing: 0.05rem;
+}
 
 h2 {
-  color: blue;
-  font-size: 0.8rem;
+  color: #333dff;
+  font-size: 1rem;
   font-weight: 800;
-  text-transform: uppercase;
   letter-spacing: 0.15em;
+  text-transform: uppercase;
 }
 
 h3 {
   font-size: 1rem;
-  font-weight: 600;
-}
-
-html {
-  font-size: 0.85rem;
+  font-weight: 800;
 }
 
 .container {
@@ -28,26 +29,41 @@ html {
 }
 
 .control-panel {
-  font-family: "Space Grotesk", monospace;
+  background-color: #fdf6d8;
+  border: 1px solid #333dff;
   display: block;
-  width: 480px;
+  font-family: "Source Sans Pro", monospace;
   height: auto;
+  width: 420px;
   z-index: 9;
-  background-color: white;
-  box-shadow: 4px 4px 8px rgba(92, 8, 237, 0.25);
 }
 
 #controlPanelHeader {
-  border-bottom: 1px solid black;
+  background-color: #333dff;
+  border-bottom: 1px solid #333dff;
+  color: white;
   cursor: move;
   display: flex;
   justify-content: space-between;
   padding: 8px;
-  margin-bottom: 8px;
 }
 
 #chickenSelectorContainer {
   height: auto;
+  padding: 8px;
+}
+
+select {
+  align-items: center;
+  appearance: menulist;
+  background-color: white;
+  border: 1px solid #333dff;
+  border-radius: 4px;
+  color: #333dff;
+  display: flex;
+  height: 32px;
+  padding: 0px 4px;
+  width: auto;
 }
 
 #allControlsContainer {
@@ -56,101 +72,90 @@ html {
 }
 
 #leftHandMenu {
-  height: 300px;
+  background-color: #fbeff4;
+  height: auto;
   width: 30%;
 }
 
 #rightHandPanel {
-  border-left: 1px solid black;
+  border-left: 1px solid #333dff;
   height: auto;
-  padding: 8px;
   width: 70%;
 }
 
-select {
-  align-items: center;
-  appearance: menulist;
-  border: 1px solid black;
-  display: flex;
-  height: 32px;
-  width: auto;
-  margin: 8px;
-}
-
-.lefthand-selector-container {
-  display: flex;
-  padding: 8px 8px;
-}
-
-.lefthand-selector-container:hover {
-  background-color: black;
-  color: white;
-}
-
-.selected {
-  background-color: yellow;
-}
-
-input[type="range"] {
+/* Range Slider Input Type */
+input {
   -webkit-appearance: none;
-  appearance: none;
-  background: transparent;
+  background: #fefefe;
+  border: 1px solid #000be0;
+  border-radius: 4px;
+  height: 20px;
+  overflow: hidden;
+  width: 100%;
+}
+
+input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 8px;
+  height: 20px;
+  background: #ffffff;
+  border: 1px solid #333dff;
+  border-radius: 4px;
   cursor: pointer;
-  width: 15rem;
+  box-shadow: -400px 0 0 400px #333dff;
 }
 
-input[type="range"]::-webkit-slider-runnable-track {
-  background: #053a5f;
-  height: 1rem;
-}
-
-/******** Firefox ********/
-input[type="range"]::-moz-range-track {
-  background: #053a5f;
-  height: 1rem;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
-  appearance: none;
-  background-color: #5cd5eb;
-  border-radius: 10px;
-  height: 1rem;
-  width: 1rem;
+input:disabled {
+  opacity: 25%;
 }
 
 #selectorMenu {
-  border: 1px solid black;
-  margin: 8px;
 }
 
 .menu-section-container {
+  padding: 12px;
+}
+
+.menu-subsection-header {
+  padding: 8px;
 }
 
 .menu-subsection-container {
-  margin: 8px 0px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid black;
 }
 
 .split-sliders-container {
-  display: block;
+  display: flex;
   width: 100%;
 }
 
 .split-slider-container {
-  display: flex;
-  width: 50%;
+  align-items: center;
+  display: block;
+  width: 100%;
+}
+
+.split-slider-container p {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  width: 100%;
 }
 
 .split-slider-container input {
-  width: 100%;
-  margin-left: 8px;
+  width: 75%;
 }
 
 .menu-selector {
-  border: 1px solid black;
   display: flex;
   width: 100%;
   height: 32px;
-  align-items: center;
   justify-content: left;
+  padding: 8px;
+}
+
+.selected {
+  background-color: #adb1ff;
 }

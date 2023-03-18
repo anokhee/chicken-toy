@@ -35,8 +35,8 @@ function plotOutlines(obj, allPoints, fullBodyOutline, headOutline, lerpVal) {
     headConnectingRow.push(point);
   };
 
-  let getCurvePoints = function (a, b, c, func) {
-    for (let i = 0; i < 1; i += lerpVal) {
+  let getCurvePoints = function (a, b, c, func, whichLerp) {
+    for (let i = 0; i < 1; i += whichLerp) {
       let point = lerp(a, b, c, i);
       func(point);
     }
@@ -46,8 +46,10 @@ function plotOutlines(obj, allPoints, fullBodyOutline, headOutline, lerpVal) {
     p1: [
       [headPoints[head50p].x, headPoints[head50p].y],
       [
-        (headPoints[head50p].x + bodyPoints[body25p].x) / 2,
-        (headPoints[head50p].y + bodyPoints[body25p].y) / 2 - 75,
+        (headPoints[head50p].x + bodyPoints[body25p].x) / 2 +
+          obj.head.neckCurve.x,
+        (headPoints[head50p].y + bodyPoints[body25p].y) / 2 +
+          obj.head.neckCurve.y,
       ],
       [bodyPoints[body75p].x, bodyPoints[body75p].y],
     ],
@@ -85,14 +87,16 @@ function plotOutlines(obj, allPoints, fullBodyOutline, headOutline, lerpVal) {
     this.bodyBeziersTop.p1[0],
     this.bodyBeziersTop.p1[1],
     this.bodyBeziersTop.p1[2],
-    pushToTopRow
+    pushToTopRow,
+    lerpVal
   );
 
   getCurvePoints(
     this.bodyBeziersTop.p2[0],
     this.bodyBeziersTop.p2[1],
     this.bodyBeziersTop.p2[2],
-    pushToTopRow
+    pushToTopRow,
+    lerpVal
   );
 
   // Bottom Row
@@ -101,7 +105,8 @@ function plotOutlines(obj, allPoints, fullBodyOutline, headOutline, lerpVal) {
     this.bodyBeziersBottom.p1[0],
     this.bodyBeziersBottom.p1[1],
     this.bodyBeziersBottom.p1[2],
-    pushToBottomRow
+    pushToBottomRow,
+    lerpVal
   );
 
   for (let i = rightLeg50p; i > 0; i--) {
@@ -115,7 +120,8 @@ function plotOutlines(obj, allPoints, fullBodyOutline, headOutline, lerpVal) {
     this.bodyBeziersBottom.p2[0],
     this.bodyBeziersBottom.p2[1],
     this.bodyBeziersBottom.p2[2],
-    pushToBottomRow
+    pushToBottomRow,
+    lerpVal
   );
 
   for (let i = leftLeg50p + 1; i >= 0; i--) {
@@ -127,9 +133,13 @@ function plotOutlines(obj, allPoints, fullBodyOutline, headOutline, lerpVal) {
 
   getCurvePoints(
     [leftLegPoints[0].x, leftLegPoints[0].y],
-    [bodyPoints[0].x - obj.body.bustPoint.x, bodyPoints[0].y],
+    [
+      bodyPoints[0].x - obj.body.bustPoint.x,
+      bodyPoints[0].y + obj.body.bustPoint.y,
+    ],
     [headPoints[head25p].x, headPoints[head25p].y],
-    pushToBottomRow
+    pushToBottomRow,
+    lerpVal
   );
 
   for (let i = head25p; i >= 0; i--) {
@@ -172,7 +182,8 @@ function plotOutlines(obj, allPoints, fullBodyOutline, headOutline, lerpVal) {
     [headConnectingLine.top.x, headConnectingLine.top.y],
     [headConnectingLine.bottom.x, headConnectingLine.bottom.y],
     null,
-    pushToConnectingRow
+    pushToConnectingRow,
+    obj.head.ridgeLerp * 0.01
   );
 
   for (let i = 0; i < headConnectingRow.length; i++) {
