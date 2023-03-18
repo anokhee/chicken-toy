@@ -156,6 +156,11 @@ input:disabled {
   padding: 8px;
 }
 
+.menu-selector:hover {
+  color: white;
+  background-color: #333dff;
+}
+
 .selected {
   background-color: #adb1ff;
 }

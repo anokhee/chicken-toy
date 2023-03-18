@@ -26,10 +26,10 @@ let chickenParams = {
       range: { min: 3, max: 20 },
     },
     layout: {
-      type: "slider-two-axes",
-      label: "Layout",
+      // type: "slider-two-axes",
+      // label: "Layout",
       subLabels: { 1: "Cols", 2: "Rows" },
-      value: { cols: 1, rows: 1 },
+      value: { cols: 2, rows: 1 },
       range: { min: 1, max: 5 },
     },
   },
@@ -94,9 +94,7 @@ let chickenParams = {
       range: { min: 1, max: 100 },
     },
   },
-  beak: {
-    sectionLabel: "Beak",
-  },
+
   body: {
     sectionLabel: "Body",
     size: {
@@ -167,8 +165,5 @@ let chickenParams = {
       value: 60,
       range: { min: 1, max: 250 },
     },
-  },
-  tail: {
-    sectionLabel: "Tail",
   },
 };
